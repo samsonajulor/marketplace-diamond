@@ -332,4 +332,44 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
 
         assertEq(ERC721(l.token).ownerOf(l.tokenId), motunrayo);
     }
+      function testMint() public {
+         vm.startPrank(address(0x1111));
+        ERC721Facet(address(diamond)).mint(address(0x1111), 1);
+        assertEq(ERC721Facet(address(diamond)).balanceOf(address(0x1111)), 1);
+    }
+    function testBalanceOf() public {
+         vm.startPrank(address(0x1111));
+        ERC721Facet(address(diamond)).mint(address(0x1111), 1);
+        assertEq(ERC721Facet(address(diamond)).balanceOf(address(0x1111)), 1);
+    }
+    // function testBurn() public {
+    //    vm.startPrank(address(0x1111));
+    //     ERC721Facet(address(diamond)).mint(address(0x1111), 1);
+    //     ERC721Facet(address(diamond)).burn (1); 
+    // }
+    function testTransferFrom() public {
+         vm.startPrank(address(0x1111));
+        ERC721Facet(address(diamond)).mint(address(0x1111), 1);
+        ERC721Facet(address(diamond)).approve(address(diamond), 1);
+        vm.startPrank(address(diamond));
+        ERC721Facet(address(diamond)).transferFrom(address(0x1111), address(0x2222), 1);
+    }
+    function testApprove() public {
+             vm.startPrank(address(0x1111));
+        ERC721Facet(address(diamond)).mint(address(0x1111), 1);
+        ERC721Facet(address(diamond)).approve(address(0x2222), 1);
+    }
+    function testSafeTransferFrom() public {
+        vm.startPrank(address(0xA003A9A2E305Ff215F29fC0b7b4E2bb5a8C2F3e1));
+        ERC721Facet(address(diamond)).mint(address(0xA003A9A2E305Ff215F29fC0b7b4E2bb5a8C2F3e1), 1);
+        ERC721Facet(address(diamond)).approve(address(diamond), 1);
+        vm.startPrank(address(diamond));
+        ERC721Facet(address(diamond)).transferFrom(address(0xA003A9A2E305Ff215F29fC0b7b4E2bb5a8C2F3e1), address(0x2222), 1);
+    }
+    function testOwnerOf() public {
+        vm.startPrank(address(0x1111));
+     ERC721Facet(address(diamond)).mint(address(0x1111), 1);  
+     ERC721Facet(address(diamond)).ownerOf(1);
+    }
+
 }
