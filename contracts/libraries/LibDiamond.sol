@@ -53,6 +53,22 @@ library LibDiamond {
 
         mapping(uint256 => Listing) listings;
         uint256 listingId;
+
+        /*//////////////////////////////////////////////////////////////
+                            ERC721 APPROVAL STORAGE
+        //////////////////////////////////////////////////////////////*/
+
+        mapping(uint256 => address) getApproved;
+
+        mapping(address => mapping(address => bool)) isApprovedForAll;
+
+        string name;
+
+        string symbol;
+
+        mapping(uint256 => address) _ownerOf;
+
+        mapping(address => uint256) _balanceOf;
     }
 
     function diamondStorage()
@@ -76,6 +92,14 @@ library LibDiamond {
         address previousOwner = ds.contractOwner;
         ds.contractOwner = _newOwner;
         emit OwnershipTransferred(previousOwner, _newOwner);
+    }
+
+    function setERC721Details(string memory _name, string memory _symbol)
+        internal
+    {
+        DiamondStorage storage ds = diamondStorage();
+        ds.name = _name;
+        ds.symbol = _symbol;
     }
 
     function contractOwner() internal view returns (address contractOwner_) {
