@@ -6,6 +6,7 @@ pragma solidity ^0.8.0;
 * EIP-2535 Diamonds: https://eips.ethereum.org/EIPS/eip-2535
 /******************************************************************************/
 import {IDiamondCut} from "../interfaces/IDiamondCut.sol";
+import {Listing} from "../structs/marketplace.structs.sol";
 
 library LibDiamond {
     error InValidFacetCutAction();
@@ -47,6 +48,11 @@ library LibDiamond {
         mapping(bytes4 => bool) supportedInterfaces;
         // owner of the contract
         address contractOwner;
+
+        // marketplace
+
+        mapping(uint256 => Listing) listings;
+        uint256 listingId;
     }
 
     function diamondStorage()
