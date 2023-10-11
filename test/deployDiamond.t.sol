@@ -83,8 +83,6 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
         erc721F = new ERC721Facet();
         // nft = new OurNFT();
 
-
-
         l = Listing({
             token: address(erc721F),
             tokenId: 1,
@@ -96,7 +94,7 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
         });
 
         // mint NFT
-        erc721F.mint(address(0x1111), 1);
+        erc721F.mint(dayo, 1);
 
         //upgrade diamond with facets
 
@@ -157,8 +155,8 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
 
     /// Tests for MarketPlace
     function testOwnerCannotCreateListing() public {
-        l.lister = dayo;
-        vm.startPrank(address(diamond));
+        l.lister = motunrayo;
+        vm.startPrank(motunrayo);
 
         vm.expectRevert(MarketPlaceFacet.NotOwner.selector);
         marketF.createListing(l);
@@ -166,7 +164,7 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
 
     function testNonApprovedNFT() public {
         // start prank with creator
-        vm.startPrank(address(diamond));
+        vm.startPrank(dayo);
         vm.expectRevert(MarketPlaceFacet.NotApproved.selector);
         marketF.createListing(l);
     }
@@ -210,7 +208,6 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
         marketF.createListing(l);
     }
 
-    // EDIT LISTING
     function testEditNonValidListing() public {
         vm.startPrank(dayo);
         vm.expectRevert(MarketPlaceFacet.ListingNotExistent.selector);
@@ -255,7 +252,6 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
         assertEq(t.active, false);
     }
 
-    // EXECUTE LISTING
     function testExecuteNonValidListing() public {
         vm.startPrank(dayo);
         vm.expectRevert(MarketPlaceFacet.ListingNotExistent.selector);
@@ -322,7 +318,6 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
         );
         uint256 lId = marketF.createListing(l);
         vm.startPrank(motunrayo);
-        uint256 dayoBalanceBefore = dayo.balance;
 
         marketF.executeListing{value: l.price}(lId);
 
@@ -330,8 +325,10 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
         assertEq(t.price, 1 ether);
         assertEq(t.active, false);
 
-        assertEq(ERC721(l.token).ownerOf(l.tokenId), motunrayo);
+        assertEq(ERC721Facet(l.token).ownerOf(l.tokenId), motunrayo);
     }
+
+    /// Test NFT
       function testMint() public {
          vm.startPrank(address(0x1111));
         ERC721Facet(address(diamond)).mint(address(0x1111), 1);
@@ -342,11 +339,12 @@ contract DiamondDeployer is DiamondUtils, IDiamondCut {
         ERC721Facet(address(diamond)).mint(address(0x1111), 1);
         assertEq(ERC721Facet(address(diamond)).balanceOf(address(0x1111)), 1);
     }
-    // function testBurn() public {
-    //    vm.startPrank(address(0x1111));
-    //     ERC721Facet(address(diamond)).mint(address(0x1111), 1);
-    //     ERC721Facet(address(diamond)).burn (1); 
-    // }
+    function testBurn() public {
+       vm.startPrank(address(0x1111));
+        ERC721Facet(address(diamond)).mint(address(0x1111), 1);
+        ERC721Facet(address(diamond)).burn (1);
+        assertEq(ERC721Facet(address(diamond)).balanceOf(address(0x1111)), 0);
+    }
     function testTransferFrom() public {
          vm.startPrank(address(0x1111));
         ERC721Facet(address(diamond)).mint(address(0x1111), 1);

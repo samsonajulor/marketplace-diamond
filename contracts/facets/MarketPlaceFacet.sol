@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "../../lib/solmate/src/tokens/ERC721.sol";
+import "./ERC721Facet.sol";
 import {SignUtils} from "../libraries/SignUtils.sol";
 import {Listing} from "../structs/marketplace.structs.sol";
 import {LibDiamond} from "../libraries/LibDiamond.sol";
@@ -35,9 +35,9 @@ contract MarketPlaceFacet {
 
     function createListing(Listing calldata l) public returns (uint256 lId) {
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
-        if (ERC721(l.token).ownerOf(l.tokenId) != msg.sender)
+        if (ERC721Facet(l.token).ownerOf(l.tokenId) != msg.sender)
             revert NotOwner();
-        if (!ERC721(l.token).isApprovedForAll(msg.sender, address(this)))
+        if (!ERC721Facet(l.token).checkIsApprovedForAll(msg.sender, address(this)))
             revert NotApproved();
 
         if (l.price < 0.01 ether) revert MinPriceTooLow();
@@ -90,7 +90,7 @@ contract MarketPlaceFacet {
         listing.active = false;
 
         // transfer
-        ERC721(listing.token).transferFrom(
+        ERC721Facet(listing.token).transferFrom(
             listing.lister,
             msg.sender,
             listing.tokenId

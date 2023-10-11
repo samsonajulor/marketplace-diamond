@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "../interfaces/IERC721.sol";
 import "../libraries/LibDiamond.sol";
 
 contract ERC721Facet {
@@ -59,6 +58,11 @@ contract ERC721Facet {
         ds.getApproved[id] = spender;
 
         emit Approval(owner, spender, id);
+    }
+    
+    function checkIsApprovedForAll(address origin, address operator) public view returns (bool){
+        LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
+        return ds.isApprovedForAll[origin][operator];
     }
 
     function setApprovalForAll(address operator, bool approved) public virtual {
@@ -210,6 +214,10 @@ contract ERC721Facet {
 
     function mint(address recipient, uint256 tokenId) public payable {
         _mint(recipient, tokenId);
+    }
+
+    function burn(uint256 tokenId) public payable {
+        _burn(tokenId);
     }
 }
 
