@@ -1,7 +1,34 @@
-[![Mentioned in Awesome Foundry](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/crisgarner/awesome-foundry)
-# Foundry + Hardhat Diamonds
+# NFT MarketPlace Diamonds
 
-This is a mimimal template for [Diamonds](https://github.com/ethereum/EIPs/issues/2535) which allows facet selectors to be generated on the go in solidity tests!
+This repository implements the Diamond EIP (ERC-2535) by Nick Mudge to create Facets for a simple NFT MarketPlace imitation.
+
+It includes the following functions:
+
+createListing(Listing calldata l)
+
+Description: Allows a user to create a new listing in the marketplace.
+Parameters:
+l: A Listing struct containing details of the listing.
+Returns: The unique identifier (listingId) of the created listing.
+executeListing(uint256 _listingId)
+
+Description: Enables a user to purchase and execute a listing.
+Parameters:
+_listingId: The unique identifier of the listing to be executed.
+Requires payment in Ether equal to the listing price.
+editListing(uint256 _listingId, uint256 _newPrice, bool _active)
+
+Description: Allows the listing owner to edit an existing listing, changing its price and availability status.
+Parameters:
+_listingId: The unique identifier of the listing to be edited.
+_newPrice: The new price for the listing.
+_active: A boolean indicating the listing's availability status.
+getListing(uint256 _listingId)
+
+Description: Retrieves information about a specific listing.
+Parameters:
+_listingId: The unique identifier of the listing to be retrieved.
+Returns: A Listing struct containing details of the listing.
 
 ## Installation
 
@@ -18,8 +45,4 @@ $ forge update
 $ forge t
 ```
 
-`Note`: A lot of improvements are still needed so contributions are welcome!!
-
-Bonus: The [DiamondLoupefacet](contracts/facets/DiamondLoupeFacet.sol) uses an updated [LibDiamond](contracts/libraries//LibDiamond.sol) which utilises solidity custom errors to make debugging easier especially when upgrading diamonds. Take it for a spin!!
-
-Need some more clarity? message me [on twitter](https://twitter.com/Timidan_x), Or join the [EIP-2535 Diamonds Discord server](https://discord.gg/kQewPw2)
+Bonus: The [DiamondLoupefacet](contracts/facets/DiamondLoupeFacet.sol) uses an updated [LibDiamond](contracts/libraries//LibDiamond.sol) which utilises solidity custom errors to make debugging easier especially when upgrading diamonds.
